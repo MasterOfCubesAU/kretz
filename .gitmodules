@@ -1,0 +1,3 @@
+[submodule "ITK"]
+	path = ITK
+	url = https://github.com/InsightSoftwareConsortium/ITK

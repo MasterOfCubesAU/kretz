@@ -1,0 +1,6 @@
+services:
+  app:
+    build: .
+    volumes:
+      - ./inputs:/kretz/inputs
+      - ./outputs:/kretz/outputs
