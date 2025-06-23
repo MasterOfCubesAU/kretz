@@ -1,76 +1,66 @@
-# README #
+# Kretz
 
-### What is this repository for? ###
+This repo serves as a program to convert raw `.vol` files to nifti or dicom files.
 
-* KRETZ is a small library to enable reading a 3D Ultrasound Kretzfile and to convert between the toroidal geometry and cartesian space and visa versa
-* Version 1.0
-* Two executabels are KretzWriter and KretzConverter to perform the conversion
-* The first three tests found in the CMakeList.txt file descibe the use and command line options of the executables to convert between the different geometries. The source files for these executables show how the geometry conversion can be performed and integrated in ITK pipelines.
+If you would like to run this program on a Linux machine, feel free to download a release from [releases](https://github.com/MasterOfCubesAU/kretz/releases). Alternatively, if you would like to build from source, follow the instructions below.
 
-### How do I get set up? ###
+**Kretz** refers to a `.vol` file in this context.
 
-**Dependencies**
+# Requirements
 
-`ITK, Boost (for command line executables), Doxygen and GraphViz (for documentation)`
+- Docker Desktop/Engine
 
-**How to build**
+# Setup
 
-Use cmake and make
-
+```bash
+git submodule update --init --recursive
+docker build -t kretz .
 ```
 
-mkdir kretz-module-build
-cd kretz-module-build
-cmake -DITK_DIR=/path/to/ITK-build /path/to/kretz
-make
-cd ..
+# Usage
 
-mkdir kretz-programs-build
-cd kretz-programs-build
-cmake -DITK_DIR=/path/to/ITK-build /path/to/kretz/examples
-make
+1. Copy all the `.vol` files you wish to convert into the `inputs` folder
+2. Run the below command
+
+```bash
+docker compose run app
+
+# if <CLI_ARGS> is omitted, program will run with defaults: -r 0.2 0.2 0.2 and -d. You will get both a bmode and power doppler output
+
+# If you wanted to run the kretz converter with only -m and image dimensions 100x200x300 for example, you would execute
+docker compose run app -- -m -s 100 200 300
+
+# See Programs below for CLI args.
 ```
 
-**Programs**
+1. When prompted, enter the output type you would like. Supported types are `.dcm` and `.nii.gz`.
 
-*KretzFileWriter* either takes a KRETZ file and outputs the voxels in the geometry of the 3D ultrasound probe. One dimension corresponds to radial distance and the others correspond to the angles. The spacing is not isotropic and can be found in the KRETZ file. KretzFileWriter can take a cartesian geometry and a KRETZ file and convert the cartesian geometry back into the geometry specified in the KRETZ file.
+2. All your converted files can then be found in the`outputs` folder
 
-  arguments:
-   - i - input KRETZ file
-   - c - optional cartesian file to convert back into geometry specified in the KRETZ file
-   - o - path for the output file
+# Programs
 
-*KretzConverter* takes a KRETZ file and converts it to cartesian coordinates.
+The below program help is taken from [here](https://github.com/plooney/kretz)
 
-  arguments:
-   - i - input KRETZ file
-   - o - path for the output file
-   - r - three floating point values corresponding to the voxel spacing in each direction, if not specified s must be
-   - s - three integers to define the number of voxels in each direction, if not specifed r must be
-   - m - create a mask image 1 where the voxel is in the geometry of the ultrasound beam and 0 otherwise
-   - n - normalise voxel values to have zero mean and unit variance
-   - d - write out power doppler instead of grayscale voxel values to geometry of the grayscale acquisition
+## KretzFileWriter
 
-**How to run tests**
+This program either takes a KRETZ file and outputs the voxels in the geometry of the 3D ultrasound probe. One dimension corresponds to radial distance and the others correspond to the angles. The spacing is not isotropic and can be found in the KRETZ file. KretzFileWriter can take a cartesian geometry and a KRETZ file and convert the cartesian geometry back into the geometry specified in the KRETZ file.
 
-make test
+arguments:
 
-**How to create docs**
+- i - input KRETZ file
+- c - optional cartesian file to convert back into geometry specified in the KRETZ file
+- o - path for the output file
 
-make doc
+## KretzConverter
 
-## Community Guidelines
+This program takes a KRETZ file and converts it to cartesian coordinates.
 
-Please use the [issue tracker](https://github.com/plooney/kretz/issues) to report any problems with the software. If you want to contribute to the development of KRETZ, please send a pull request.
+arguments:
 
-## Contributors
-
-* Padraig Looney, University of Oxford
-
-## License
-
-KRETZ is provided under the terms of the [Apache 2.0 License](https://opensource.org/licenses/Apache-2.0).
-
-## Acknowledgements
-
-* This project has received funding from was supported by the Eunice Kennedy Shriver National Institute of Child Health and Human Development (NICHD) Human Placenta Project of the National Institutes of Health under award number UO1-HD087209.
+- i - input KRETZ file
+- o - path for the output file
+- r - three floating point values corresponding to the voxel spacing in each direction, if not specified s must be
+- s - three integers to define the number of voxels in each direction, if not specifed r must be
+- m - create a mask image 1 where the voxel is in the geometry of the ultrasound beam and 0 otherwise
+- n - normalise voxel values to have zero mean and unit variance
+- d - write out power doppler instead of grayscale voxel values to geometry of the grayscale acquisition
