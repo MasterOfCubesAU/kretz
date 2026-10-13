@@ -1,6 +1,7 @@
 FROM gcc:11.3.0 AS itk-build-stage
 
 RUN apt-get update
+RUN sed -i "4s/deb http:\/\/deb.debian.org\/debian-security bullseye-security main/deb http:\/\/archive.debian.org\/debian-security\/ bullseye-security main/" /etc/apt/sources.list
 RUN apt-get install cmake git build-essential libtcmalloc-minimal4 cmake gfortran- libboost-all-dev graphviz doxygen -y
 RUN ln -s /usr/lib/libtcmalloc_minimal.so.4 /usr/lib/libtcmalloc_minimal.so
 
